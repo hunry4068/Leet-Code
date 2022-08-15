@@ -1,4 +1,19 @@
+from cgitb import reset
+from math import floor
+from re import L
+from typing import List, Optional
+
+
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
 class Solution:
+
+    def __init__(self) -> None:
+        pass
 
     # 772. Basic Calculator III
     def calculator(self, strParam: str) -> int:
@@ -64,3 +79,69 @@ class Solution:
             dic['o'] = i
             dic['u'] = i + o
         return sum(dic.values()) % (pow(10, 9) + 7)
+
+    # 108. Convert Sorted Array to Binary Search Tree
+    def sortedArrayToBST(self, nums: List[int]) -> Optional[TreeNode]:
+        ln = len(nums)
+        if ln < 2: return nums
+
+        mid, level = floor(ln / 2), 0
+        res, left, right = [nums[mid]], nums[:mid], nums[mid+1:]
+        while left and right:
+            empty_node = [None] * (2 ** level -1)
+            level_node = [left.pop()] + empty_node + [right.pop()]
+            if left or right: level_node += empty_node
+            res += level_node
+            level += 1
+
+        if left: 
+            res += left
+        if right:
+            res += [None] * (2 ** level) + right
+
+        return res
+
+    # def sortedArrayToBST(self, nums: List[int]) -> Optional[TreeNode]:
+    #     ln = len(nums)
+    #     if ln == 1: 
+    #         return TreeNode(nums[0])
+
+    #     mid = floor(ln / 2)
+    #     head = TreeNode(nums[mid])
+    #     left, right = nums[:mid], nums[mid+1:]
+    #     if left:
+    #         head.left = self.sortedArrayToBST(left)
+    #     if right:
+    #         head.right = self.sortedArrayToBST(right)
+    #     return head
+        # return self.PreoderTraversal(head)
+
+    # def PreoderTraversal(self, head: TreeNode) -> list[int]:
+    #     queue = [head]
+    #     result = []
+    #     for node in queue:
+    #         result.append(node.val)
+    #         if node.left:
+    #             queue.append(node.left)
+    #         if node.right:
+    #             queue.append(node.right)
+    #         else:
+                
+    #         result.append(stack.pop(0))
+
+    #     if head.left
+    #     if head.left:
+    #         self.PreoderTraversal(self, head: TreeNode, stack)
+    #     if head.right:
+    #         pass
+    #     return stack
+
+    # 98. Validate Binary Search Tree
+    def isValidBST(self, root: Optional[TreeNode]) -> bool:
+        return self.BSTChecker(root, -(2**32), 2**32)
+    def BSTChecker(self, node, min, max):
+        if node == None: return True
+        val = node.val
+        if not (min < val < max): return False
+
+        return self.BSTChecker(node.left, min, val) and self.BSTChecker(node.right, val, max)
